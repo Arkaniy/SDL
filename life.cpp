@@ -1,16 +1,15 @@
 #include "life.h"
-#include "panel.h"
 #include <gfxengine.h>
 #include <algorithm>
 
-Life::Life(int width, int height, Block *block)
-	: _block(block)
+Life::Life(Rect rect, int cellSize)
+	: Widget(rect)
 	, _drawGrid(false)
 	, _isRun(false)
-	, _width(width)
-	, _height(height) {
-
-	setBlock(block);
+	, _cellSize(cellSize)
+	, _width(_rect._w / cellSize)
+	, _height(_rect._h / cellSize)
+	, _step(0) {
 
 	_life.resize(_height);
 	for (auto& i : _life) {
@@ -45,34 +44,33 @@ void Life::update() {
 			}
 		}
 		_life = c;
+		++_step;
 	}
 }
 
 void Life::draw(GfxEngine &gfxEngine) const {
 	if (_drawGrid) {
 		for (int i = 0; i <= _height; ++i) {
-			int ii = _block->getScreenY(i * _sizeI);
-			gfxEngine.drawLine(_block->getScreenX(0), ii, _block->getScreenX(_width * _sizeJ), ii);
+			gfxEngine.drawLine(0, i * _cellSize, _width * _cellSize, i * _cellSize, this);
 		}
 
 		for (int j = 0; j <= _width; ++j) {
-			int jj = _block->getScreenX(j * _sizeJ);
-			gfxEngine.drawLine(jj, _block->getScreenY(0), jj, _block->getScreenY(_height * _sizeI));
+			gfxEngine.drawLine(j * _cellSize, 0, j * _cellSize, _height * _cellSize, this);
 		}
 	}
 
 	for (int i = 0; i < _height; ++i) {
 		for (int j = 0; j < _width; ++j) {
 			if (_life[i][j]) {
-				int ii = _block->getScreenY(i * _sizeI);
-				int jj = _block->getScreenX(j * _sizeJ);
-				gfxEngine.drawRect(jj, ii, _sizeJ, _sizeI, {255,255,0,255});
+				int ii = i * _cellSize;
+				int jj = j * _cellSize;
+				gfxEngine.drawRect(jj, ii, _cellSize, _cellSize, {255,255,0,255}, this);
 			}
 		}
 	}
 }
 
-void Life::handleEvent(const SDL_Event &event) {
+bool Life::handleEvent(const SDL_Event &event) {
 	if (event.type == SDL_KEYDOWN) {
 		switch (event.key.keysym.sym) {
 		case SDLK_SPACE :
@@ -89,24 +87,30 @@ void Life::handleEvent(const SDL_Event &event) {
 			break;
 		}
 	} else if (event.type == SDL_MOUSEBUTTONDOWN) {
-		int i = _block->getPanelY(event.button.y) * _height / _block->getH();
-		int j = _block->getPanelX(event.button.x) * _width / _block->getW();
+		Coord c = getWidgetCoord(Coord(event.button.x, event.button.y));
+		int i = c._y * _height / _rect._h;
+		int j = c._x * _width / _rect._w;
 		if (i < _height && j < _width && i >= 0 && j >= 0) {
 			_life[i][j] = true;
+			return true;
 		}
 	} else if (event.type == SDL_MOUSEMOTION && event.button.button == SDL_BUTTON_LEFT) {
-		int i = _block->getPanelY(event.button.y) * _height / _block->getH();
-		int j = _block->getPanelX(event.button.x) * _width / _block->getW();
+		Coord c = getWidgetCoord(Coord(event.button.x, event.button.y));
+		int i = c._y * _height / _rect._h;
+		int j = c._x * _width / _rect._w;
 		if (i < _height && j < _width && i >= 0 && j >= 0) {
 			_life[i][j] = true;
+			return true;
 		}
 	}
+	return false;
 }
 
 void Life::clear() {
 	for (auto& i : _life) {
 		std::fill(i.begin(), i.end(), false);
 	}
+	_step = 0;
 }
 
 void Life::reset() {
@@ -115,13 +119,9 @@ void Life::reset() {
 			return rand()%2;
 		});
 	}
+	_step = 0;
 }
 
-void Life::setBlock(Block *block)
-{
-	_block = block;
-	if (block != nullptr) {
-		_sizeI = block->getH() / _height;
-		_sizeJ = block->getW() / _width;
-	}
+int Life::getStep() const {
+	return _step;
 }

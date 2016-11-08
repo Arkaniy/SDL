@@ -10,7 +10,7 @@ ResourceLoader::ResourceLoader(SDL_Renderer *renderer)
 void ResourceLoader::loadImage(std::string path, std::string id) const {
 	SDL_Surface *loadedSurface = IMG_Load(path.c_str());
 	if (loadedSurface == NULL) {
-		std::cout << "Cannot find the image\n";
+		std::cout << "Cannot find the image: " << path.c_str() << std::endl;
 		return;
 	}
 
@@ -23,4 +23,14 @@ void ResourceLoader::loadImage(std::string path, std::string id) const {
 	}
 
 	ResourceContainer::imageContainer[id] = _texture;
+}
+
+void ResourceLoader::loadFont(std::string path, std::string id) const
+{
+	TTF_Font *font = TTF_OpenFont(path.c_str(), 20);
+	if (font == NULL) {
+		std::cout << "Cannot find the font: " << path.c_str() << std::endl;
+		return;
+	}
+	ResourceContainer::fontContainer[id] = font;
 }

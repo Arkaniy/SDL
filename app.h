@@ -4,8 +4,7 @@
 #include <SDL2/SDL.h>
 #include "gfxengine.h"
 #include "life.h"
-
-class Block;
+#include "lifeinfo.h"
 
 class App {
 public:
@@ -21,6 +20,8 @@ private:
 
 	Life _life;
 	Life _life2;
+	LifeInfo _lifeInfo;
+
 	GfxEngine _gfxEngine;
 };
 

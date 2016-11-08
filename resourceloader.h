@@ -9,6 +9,7 @@ class ResourceLoader
 public:
 	ResourceLoader(SDL_Renderer *renderer);
 	void loadImage(std::string path, std::string id) const;
+	void loadFont(std::string path, std::string id) const;
 private:
 	SDL_Renderer *_renderer;
 };

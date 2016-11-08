@@ -9,7 +9,7 @@ QT       += core
 QT       -= gui
 
 QMAKE_CXXFLAGS += -std=c++14
-LIBS += -lSDL2 -lSDL2_image
+LIBS += -lSDL2 -lSDL2_image -lSDL2_ttf
 
 TARGET = SDL2AppCore
 CONFIG   += console
@@ -26,7 +26,7 @@ SOURCES += main.cpp \
     resourceloader.cpp \
     imagecontainer.cpp \
     cfg.cpp \
-    panel.cpp
+    lifeinfo.cpp
 
 HEADERS += \
     app.h \
@@ -36,4 +36,4 @@ HEADERS += \
     resourceloader.h \
     imagecontainer.h \
     cfg.h \
-    panel.h
+    lifeinfo.h

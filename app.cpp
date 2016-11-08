@@ -2,17 +2,13 @@
 #include "gfxengine.h"
 #include <iostream>
 #include "imagecontainer.h"
-#include "panel.h"
 #include "cfg.h"
 
 App::App()
-	: _life(100, 75, nullptr)
-	, _life2(100, 75, nullptr){
-	_blocks.push_back(new Block(0,0,300,150));
-	_blocks.push_back(new Block(15,175,300,150));
+	: _life(Rect(Coord(10, 0), 300, 150), 5)
+	, _life2(Rect(Coord(10, 175), 300, 150), 10)
+	, _lifeInfo(Rect(Coord(20, 400), 50, 25), _life) {
 
-	_life.setBlock(_blocks[0]);
-	//_life2.setBlock(_blocks[1]);
 }
 
 bool App::init() {
@@ -32,8 +28,9 @@ void App::run() {
 			if (event.type == SDL_QUIT) {
 				isRun = false;
 			} else {
-				_life.handleEvent(event);
-				_life2.handleEvent(event);
+				if (!_life.handleEvent(event)) {
+					_life2.handleEvent(event);
+				}
 			}
 		}
 
@@ -55,8 +52,8 @@ void App::update() {
 
 void App::draw() {
 	_gfxEngine.startFrame();
-	//_gfxEngine.draw(ResourceContainer::imageContainer["1"], {0,0,720,480});
 	_life.draw(_gfxEngine);
 	_life2.draw(_gfxEngine);
+	_lifeInfo.draw(_gfxEngine);
 	_gfxEngine.endFrame();
 }
