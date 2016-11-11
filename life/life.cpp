@@ -1,14 +1,14 @@
 #include "life.h"
-#include <gfxengine.h>
+#include <gfx_engine/gfxengine.h>
 #include <algorithm>
 
-Life::Life(Rect rect, int cellSize)
+Life::Life(SDL_Rect rect, int cellSize)
 	: Widget(rect)
 	, _drawGrid(false)
 	, _isRun(false)
 	, _cellSize(cellSize)
-	, _width(_rect._w / cellSize)
-	, _height(_rect._h / cellSize)
+	, _width(_rect.w / cellSize)
+	, _height(_rect.h / cellSize)
 	, _step(0) {
 
 	_life.resize(_height);
@@ -50,6 +50,7 @@ void Life::update() {
 
 void Life::draw(GfxEngine &gfxEngine) const {
 	if (_drawGrid) {
+		gfxEngine.setColor({100,100,100,255});
 		for (int i = 0; i <= _height; ++i) {
 			gfxEngine.drawLine(0, i * _cellSize, _width * _cellSize, i * _cellSize, this);
 		}
@@ -59,18 +60,19 @@ void Life::draw(GfxEngine &gfxEngine) const {
 		}
 	}
 
+	gfxEngine.setColor({100,200,100,255});
 	for (int i = 0; i < _height; ++i) {
 		for (int j = 0; j < _width; ++j) {
 			if (_life[i][j]) {
 				int ii = i * _cellSize;
 				int jj = j * _cellSize;
-				gfxEngine.drawRect(jj, ii, _cellSize, _cellSize, {255,255,0,255}, this);
+				gfxEngine.drawRect(jj, ii, _cellSize, _cellSize, this);
 			}
 		}
 	}
 }
 
-bool Life::handleEvent(const SDL_Event &event) {
+void Life::handleEvent(const SDL_Event &event) {
 	if (event.type == SDL_KEYDOWN) {
 		switch (event.key.keysym.sym) {
 		case SDLK_SPACE :
@@ -88,22 +90,23 @@ bool Life::handleEvent(const SDL_Event &event) {
 		}
 	} else if (event.type == SDL_MOUSEBUTTONDOWN) {
 		Coord c = getWidgetCoord(Coord(event.button.x, event.button.y));
-		int i = c._y * _height / _rect._h;
-		int j = c._x * _width / _rect._w;
+		int i = c._y * _height / _rect.h;
+		int j = c._x * _width / _rect.w;
 		if (i < _height && j < _width && i >= 0 && j >= 0) {
 			_life[i][j] = true;
-			return true;
 		}
 	} else if (event.type == SDL_MOUSEMOTION && event.button.button == SDL_BUTTON_LEFT) {
 		Coord c = getWidgetCoord(Coord(event.button.x, event.button.y));
-		int i = c._y * _height / _rect._h;
-		int j = c._x * _width / _rect._w;
+		int i = c._y * _height / _rect.h;
+		int j = c._x * _width / _rect.w;
 		if (i < _height && j < _width && i >= 0 && j >= 0) {
 			_life[i][j] = true;
-			return true;
 		}
 	}
-	return false;
+}
+
+std::string Life::getId() const {
+	return "life";
 }
 
 void Life::clear() {
@@ -124,4 +127,12 @@ void Life::reset() {
 
 int Life::getStep() const {
 	return _step;
+}
+
+int Life::getPopulation() const {
+	int count = 0;
+	for (const auto& sub : _life) {
+		count += std::count(sub.begin(), sub.end(), true);
+	}
+	return count;
 }

@@ -19,21 +19,32 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    app.cpp \
-    gui/widget.cpp \
-    gfxengine.cpp \
-    life.cpp \
-    resourceloader.cpp \
-    imagecontainer.cpp \
     cfg.cpp \
-    lifeinfo.cpp
+    core/app.cpp \
+    core/screen.cpp \
+    core/widget.cpp \
+    gfx_engine/gfxengine.cpp \
+    gfx_engine/resourceloader.cpp \
+    life/life.cpp \
+    life/lifeinfo.cpp \
+    life/lifescreen.cpp \
+    gfx_engine/resourcecontainer.cpp \
+    pong/pongscreen.cpp \
+    pong/pong.cpp \
+    fpscounter.cpp
 
 HEADERS += \
-    app.h \
-    gui/widget.h \
-    gfxengine.h \
-    life.h \
-    resourceloader.h \
-    imagecontainer.h \
     cfg.h \
-    lifeinfo.h
+    core/app.h \
+    core/screen.h \
+    core/widget.h \
+    gfx_engine/gfxengine.h \
+    gfx_engine/resourcecontainer.h \
+    gfx_engine/resourceloader.h \
+    life/life.h \
+    life/lifeinfo.h \
+    life/lifescreen.h \
+    gfx_engine/resourcecontainer.h \
+    pong/pongscreen.h \
+    pong/pong.h \
+    fpscounter.h

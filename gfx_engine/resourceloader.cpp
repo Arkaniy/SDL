@@ -1,5 +1,5 @@
 #include "resourceloader.h"
-#include "imagecontainer.h"
+#include "resourcecontainer.h"
 #include <iostream>
 
 ResourceLoader::ResourceLoader(SDL_Renderer *renderer)

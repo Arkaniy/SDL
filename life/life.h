@@ -2,24 +2,22 @@
 #define LIFE_H
 
 #include <vector>
-#include <gui/widget.h>
-
-class GfxEngine;
-union SDL_Event;
-class Block;
+#include <core/widget.h>
 
 class Life : public Widget {
 public:
-	Life(Rect rect, int cellSize);
+	Life(SDL_Rect rect, int cellSize);
 
 	void update() override;
 	void draw(GfxEngine& gfxEngine) const override;
-	bool handleEvent(const SDL_Event& event) override;
+	void handleEvent(const SDL_Event& event) override;
+	std::string getId() const;
 
 	void clear();
 	void reset();
 
 	int getStep() const;
+	int getPopulation() const;
 
 private:
 	std::vector<std::vector<bool>> _life;
