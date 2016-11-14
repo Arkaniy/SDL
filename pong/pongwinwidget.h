@@ -1,22 +1,21 @@
-#ifndef LIFEINFO_H
-#define LIFEINFO_H
+#ifndef PONGWINWIDGET_H
+#define PONGWINWIDGET_H
 
 #include "core/widget.h"
 #include "gfx_engine/text.h"
 
-class Life;
+class Pong;
 
-class LifeInfo : public Widget {
+class PongWinWidget : public Widget {
 public:
-	LifeInfo(SDL_Rect rect, const Life& life);
+	PongWinWidget(const SDL_Rect& rect, Widget *parent, Pong& pong);
 
 	void update() override;
 	void draw(GfxEngine& gfxEngine) const override;
 	void handleEvent(const SDL_Event& event) override;
 	std::string getId() const override;
 private:
-	const Life& _life;
-	Text _text;
+	Pong& _pong;
 };
 
-#endif // LIFEINFO_H
+#endif // PONGWINWIDGET_H

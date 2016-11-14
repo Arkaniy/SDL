@@ -14,7 +14,7 @@ void FpsCounter::draw(GfxEngine &gfxEngine) const {
 	std::stringstream ss;
 	ss << _currentFps;
 	gfxEngine.setColor({255,255,255,255});
-	gfxEngine.drawText(0, 0, ss.str(), ResourceContainer::fontContainer["f"], this);
+	gfxEngine.drawText(this, ss.str(), ResourceContainer::fontContainer["f"]);
 }
 
 void FpsCounter::update() {

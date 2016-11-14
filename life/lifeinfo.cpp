@@ -6,19 +6,20 @@
 
 LifeInfo::LifeInfo(SDL_Rect rect, const Life &life)
 	: Widget(rect)
-	, _life(life) {
+	, _life(life)
+	, _text(rect, this, "", ResourceContainer::fontContainer["f"], SDL_Color{200,200,0,255}, true) {
 
 }
 
 void LifeInfo::update() {
-
+	std::stringstream ss("");
+	ss << "Step: " << _life.getStep() << " Population: " << _life.getPopulation();
+	_text.setText(ss.str());
 }
 
 void LifeInfo::draw(GfxEngine &gfxEngine) const {
-	std::stringstream ss("");
-	ss << "Step: " << _life.getStep() << " Population: " << _life.getPopulation();
-	gfxEngine.setColor({200,200,100,255});
-	gfxEngine.drawText(0,0, ss.str(), ResourceContainer::fontContainer["f"], this, true);
+	gfxEngine.draw(this, ResourceContainer::imageContainer["play"]);
+	_text.draw(gfxEngine);
 }
 
 void LifeInfo::handleEvent(const SDL_Event&) {

@@ -38,6 +38,23 @@ Coord Widget::getWidgetCoord(Coord coord) const {
 	}
 }
 
+SDL_Rect Widget::getScreenRect() const {
+	SDL_Rect r;
+	Coord c = getScreenCoord(Coord(0, 0));
+	r.x = c._x;
+	r.y = c._y;
+	r.w = _rect.w;
+	r.h = _rect.h;
+	return r;
+}
+
+bool Widget::isMouseOver(int x, int y) const {
+	return x >= _rect.x &&
+		   x <= _rect.x + _rect.w &&
+		   y >= _rect.y &&
+		   y <= _rect.y + _rect.h;
+}
+
 WidgetContainer::WidgetContainer(const SDL_Rect &rect, Widget *parent)
 	: Widget(rect, parent) {
 

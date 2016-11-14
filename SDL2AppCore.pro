@@ -31,7 +31,10 @@ SOURCES += main.cpp \
     gfx_engine/resourcecontainer.cpp \
     pong/pongscreen.cpp \
     pong/pong.cpp \
-    fpscounter.cpp
+    fpscounter.cpp \
+    gfx_engine/text.cpp \
+    pong/ponginfo.cpp \
+    pong/pongwinwidget.cpp
 
 HEADERS += \
     cfg.h \
@@ -47,4 +50,7 @@ HEADERS += \
     gfx_engine/resourcecontainer.h \
     pong/pongscreen.h \
     pong/pong.h \
-    fpscounter.h
+    fpscounter.h \
+    gfx_engine/text.h \
+    pong/ponginfo.h \
+    pong/pongwinwidget.h

@@ -52,11 +52,11 @@ void Life::draw(GfxEngine &gfxEngine) const {
 	if (_drawGrid) {
 		gfxEngine.setColor({100,100,100,255});
 		for (int i = 0; i <= _height; ++i) {
-			gfxEngine.drawLine(0, i * _cellSize, _width * _cellSize, i * _cellSize, this);
+			gfxEngine.drawLine(this, 0, i * _cellSize, _width * _cellSize, i * _cellSize);
 		}
 
 		for (int j = 0; j <= _width; ++j) {
-			gfxEngine.drawLine(j * _cellSize, 0, j * _cellSize, _height * _cellSize, this);
+			gfxEngine.drawLine(this, j * _cellSize, 0, j * _cellSize, _height * _cellSize);
 		}
 	}
 
@@ -66,7 +66,7 @@ void Life::draw(GfxEngine &gfxEngine) const {
 			if (_life[i][j]) {
 				int ii = i * _cellSize;
 				int jj = j * _cellSize;
-				gfxEngine.drawRect(jj, ii, _cellSize, _cellSize, this);
+				gfxEngine.drawRect(this, SDL_Rect{jj, ii, _cellSize, _cellSize});
 			}
 		}
 	}

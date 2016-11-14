@@ -46,6 +46,8 @@ void GfxEngine::loadResources() {
 
 	resourceLoader.loadImage("1.jpg", "play");
 	resourceLoader.loadImage("2.jpg", "menu");
+	resourceLoader.loadImage("ball.jpg", "ball");
+	resourceLoader.loadImage("panel.jpg", "panel");
 	resourceLoader.loadFont("f.ttf", "f");
 }
 
@@ -75,24 +77,29 @@ void GfxEngine::setColor(const SDL_Color &color) {
 	SDL_SetRenderDrawColor(_renderer, color.r, color.g, color.b, color.a);
 }
 
-void GfxEngine::draw(SDL_Texture *texture, const SDL_Rect &rect, const Widget *widget) {
-	SDL_Rect r = rect;
-	Coord c = widget->getScreenCoord(Coord(rect.x, rect.y));
-	r.x = c._x;
-	r.y = c._y;
-	SDL_RenderCopy(_renderer, texture , nullptr, &r);
+void GfxEngine::draw(const Widget *widget, SDL_Texture *texture) {
+	if (texture != nullptr) {
+		SDL_Rect r = widget->getScreenRect();
+		SDL_RenderCopy(_renderer, texture , nullptr, &r);
+	}
 }
 
-void GfxEngine::drawRect(int x, int y, int w, int h, const Widget *widget) {
-	SDL_Rect r { x, y, w, h};
+void GfxEngine::drawRect(const Widget *widget) {
+	SDL_Rect r { 0, 0, widget->getW(), widget->getH() };
+	drawRect(widget, r);
+}
 
-	r.x = widget->getScreenCoord(Coord(x,y))._x;
-	r.y = widget->getScreenCoord(Coord(x,y))._y;
+void GfxEngine::drawRect(const Widget *widget, const SDL_Rect& rect) {
+	SDL_Rect r(rect);
+	Coord c = widget->getScreenCoord(Coord(rect.x,rect.y));
+
+	r.x = c._x;
+	r.y = c._y;
 
 	SDL_RenderFillRect(_renderer, &r);
 }
 
-void GfxEngine::drawLine(int x1, int y1, int x2, int y2, const Widget *widget) {
+void GfxEngine::drawLine(const Widget *widget, int x1, int y1, int x2, int y2) {
 	Coord c1 = widget->getScreenCoord(Coord(x1,y1));
 	Coord c2 = widget->getScreenCoord(Coord(x2,y2));
 
@@ -104,7 +111,7 @@ void GfxEngine::drawLine(int x1, int y1, int x2, int y2, const Widget *widget) {
 	SDL_RenderDrawLine(_renderer, x1, y1, x2, y2);
 }
 
-void GfxEngine::drawText(int x, int y, std::string text, TTF_Font *f, const Widget *widget, bool centered) {
+void GfxEngine::drawText(const Widget *widget, std::string text, TTF_Font *f, bool centered) {
 	SDL_Color c;
 	SDL_GetRenderDrawColor(_renderer, &c.r,&c.g,&c.b,&c.a);
 	SDL_Surface *loadedSurface = TTF_RenderText_Solid(f, text.c_str(), c);
@@ -117,11 +124,18 @@ void GfxEngine::drawText(int x, int y, std::string text, TTF_Font *f, const Widg
 		return;
 	}
 
+	SDL_Rect r;
+	r.x = widget->getX();
+	r.y = widget->getY();
+	r.w = getTextWidth(text, f);
+	r.h = getTextHeight(text, f);
+
 	if (centered) {
-		x = widget->getX() + (widget->getW() - getTextSize(text, f)) / 2;
+		r.x += widget->getW() / 2 - r.w / 2;
 	}
 
-	draw(texture, SDL_Rect{x, y, loadedSurface->w, loadedSurface->h}, widget);
+	SDL_RenderCopy(_renderer, texture , nullptr, &r);
+
 	SDL_FreeSurface(loadedSurface);
 	SDL_DestroyTexture(texture);
 
@@ -131,8 +145,14 @@ void GfxEngine::endFrame() {
 	SDL_RenderPresent(_renderer);
 }
 
-int GfxEngine::getTextSize(const std::string &text, TTF_Font *f) const {
+int GfxEngine::getTextWidth(const std::string &text, TTF_Font *f) const {
 	int w = 0;
 	TTF_SizeText(f, text.c_str(), &w, nullptr);
 	return w;
+}
+
+int GfxEngine::getTextHeight(const std::string &text, TTF_Font *f) const {
+	int h = 0;
+	TTF_SizeText(f, text.c_str(), nullptr, &h);
+	return h;
 }

@@ -30,11 +30,7 @@ Screen *Screen::run() {
 	SDL_Event event;
 	FpsCounter fpsCounter(SDL_Rect{0,0,50,25});
 
-	int frameRate = 60;
-	int frameMs = 1000 / frameRate;
-
 	while (_nextScreen == nullptr) {
-		int startMs = SDL_GetTicks(); //when the frame starts
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				return _nextScreen;
@@ -50,11 +46,6 @@ Screen *Screen::run() {
 		draw();
 		fpsCounter.draw(_gfxEngine);
 		_gfxEngine.endFrame();
-
-
-		int endMs = SDL_GetTicks(); //when the frame calculations end
-		int delayMs = frameMs - (endMs - startMs); //how long to delay
-		//SDL_Delay(delayMs); //delay processing
 	}
 	return _nextScreen;
 }
@@ -82,7 +73,7 @@ MenuScreen::MenuScreen(GfxEngine &gfxEngine)
 }
 
 void MenuScreen::draw() const {
-	_gfxEngine.draw(ResourceContainer::imageContainer["menu"], {0,0,720,480}, &_widget);
+	_gfxEngine.draw(&_widget, ResourceContainer::imageContainer["menu"]);
 }
 
 void MenuScreen::update() {

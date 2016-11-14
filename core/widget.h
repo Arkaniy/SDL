@@ -6,7 +6,6 @@
 #include "SDL2/SDL.h"
 
 class GfxEngine;
-union SDL_Event;
 
 struct Coord {
 	int _x;
@@ -20,12 +19,6 @@ struct Coord {
 	}
 };
 
-//struct Rect {
-//	Coord _coord;
-//	int _w;
-//	int _h;
-//	Rect(Coord coord, int w, int h) : _coord(coord), _w(w), _h(h) {}
-//};
 
 class Widget {
 public:
@@ -39,11 +32,13 @@ public:
 
 	Coord getScreenCoord(Coord coord) const;
 	Coord getWidgetCoord(Coord coord) const;
+	SDL_Rect getScreenRect() const;
 
 	int getX() const { return _rect.x; }
 	int getY() const { return _rect.y; }
 	int getW() const { return _rect.w; }
 	int getH() const { return _rect.h; }
+	const SDL_Rect& getRect() const { return _rect; }
 
 	void setX(int value) { _rect.x = value; }
 	void setY(int value) { _rect.y = value; }
@@ -57,6 +52,8 @@ public:
 	void setVisible(bool value) { _isVisible = value; }
 	void setActive(bool value) { _isActive = value; }
 	void setEnable(bool value) { _isEnable = value; }
+
+	bool isMouseOver(int x, int y) const;
 
 protected:
 	SDL_Rect _rect;
